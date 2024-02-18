@@ -1,4 +1,5 @@
-name: "Tag and release"
+name: "Tag and Release for AgaSwap"
+
 on:
   push:
     branches:
@@ -10,19 +11,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: 🧷️ Get version
+      # Caching dependencies to speed up workflow runs
+      - name: Cache Node Modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 🧷️ Get Version from VERSION file
         uses: juliangruber/read-file-action@02bbba9876a8f870efd4ad64e3b9088d3fb94d4b
         id: version
         with:
           path: VERSION
 
-      - name: 🧾️ Get release notes
+      - name: 🧾️ Compile Release Notes from RELEASE file
         uses: juliangruber/read-file-action@02bbba9876a8f870efd4ad64e3b9088d3fb94d4b
         id: release-notes
         with:
           path: RELEASE
 
-      - name: 🏷️ Tag
+      - name: 🏷️ Create Tag with Custom Version
         id: github-tag-action
         uses: uniswap/github-tag-action@7bddacd4864a0f5671e836721db60174d8a9c399
         with:
@@ -30,7 +40,7 @@ jobs:
           custom_tag: ${{ steps.version.outputs.content }}
           tag_prefix: ""
 
-      - name: 🪽 Release
+      - name: 🪽 Release on GitHub with Compiled Notes
         uses: actions/create-release@v1.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
