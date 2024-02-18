@@ -35,7 +35,7 @@ index 9980dfabbd5179753ba99f50c6ecfadd732cfdb9..589c58e427989181dddaa5ccd4ccf31f
      promise.resolve(result == BiometricManager.BIOMETRIC_SUCCESS)
    }
  
-@@ -138,13 +139,31 @@ class LocalAuthenticationModule(context: Context) : ExportedModule(context), Act
+@@ -138,13 +139,31 @@
      if (isDeviceSecure) {
        level = SECURITY_LEVEL_SECRET
      }
